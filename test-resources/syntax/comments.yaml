@@ -1,0 +1,55 @@
+Suite: Covers XML document with comments
+Valid:
+  - Name: Single-line comment
+    Document: |2
+      <?xml version="1.0" standalone="yes" encoding="utf-8" ?>
+      <!-- This is comment -->
+      <Ah:root xmlns:Ah="myNamespace">
+        <child1/>
+        <child2>MyValue</child2>
+      </Ah:root>
+  - Name: Multi-line comment
+    Document: |2
+      <?xml version="1.0" standalone="yes" encoding="utf-8" ?>
+      <!-- 
+        This is
+        comment 
+      -->
+      <Ah:root xmlns:Ah="myNamespace">
+        <child1/>
+        <child2>MyValue</child2>
+      </Ah:root>
+  - Name: Comment in the middle of the element
+    Document: |2
+      <?xml version="1.0" standalone="yes" encoding="utf-8" ?>
+      <!-- This is comment -->
+      <Ah:root xmlns:Ah="myNamespace">
+        <child1/>
+        <child2>MyValue <!-- This is comment --></child2>
+      </Ah:root>
+Invalid:
+  - Name: Comment before prolog
+    Document: |2
+      <!-- This is comment -->
+      <?xml version="1.0" standalone="yes" encoding="utf-8" ?>
+      <Ah:root xmlns:Ah="myNamespace">
+        <child1/>
+        <child2>MyValue</child2>
+      </Ah:root>
+  - Name: Invalid comment start tag
+    Document: |2
+      <?xml version="1.0" standalone="yes" encoding="utf-8" ?>
+      <- This is comment -->
+      <Ah:root xmlns:Ah="myNamespace">
+        <child1/>
+        <child2>MyValue</child2>
+      </Ah:root>
+  - Name: Invalid comment closing tag
+    Document: |2
+      <?xml version="1.0" standalone="yes" encoding="utf-8" ?>
+      <!-- This is comment --
+      <Ah:root xmlns:Ah="myNamespace">
+        <child1/>
+        <child2>MyValue</child2>
+      </Ah:root>
+    ExpectToFail: true # issue with lexer

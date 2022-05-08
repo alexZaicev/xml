@@ -1,0 +1,82 @@
+Name: Test suite covers XML prolog
+Valid:  
+  - Name: Full prolog attributes
+    Document: |2
+      <?xml version="1.0" standalone="yes" encoding="utf-8" ?>
+      <Ah:root xmlns:Ah="myNamespace">
+        <child1/>
+        <child2>MyValue</child2>
+      </Ah:root>
+  - Name: Prolog with version defined
+    Document: |2
+      <?xml version="1.0" ?>
+      <Ah:root xmlns:Ah="myNamespace">
+        <child1/>
+        <child2>MyValue</child2>
+      </Ah:root>
+  - Name: Prolog with version and standalone defined
+    Document: |2
+      <?xml version="1.0" standalone="yes" ?>
+      <Ah:root xmlns:Ah="myNamespace">
+        <child1/>
+        <child2>MyValue</child2>
+      </Ah:root>
+  - Name: Prolog with random spacing between attributes 
+    Document: |2
+      <?xml version="1.0"     standalone="yes"           encoding="utf-8"         ?>
+      <Ah:root xmlns:Ah="myNamespace">
+        <child1/>
+        <child2>MyValue</child2>
+      </Ah:root>
+Invalid:
+  - Name: Prolog with space between openning tag and xml
+    Document: |2
+      <? xml version="1.0" standalone="yes" encoding="utf-8" ?>
+      <Ah:root xmlns:Ah="myNamespace">
+        <child1/>
+        <child2>MyValue</child2>
+      </Ah:root>
+  - Name: Prolog without xml work
+    Document: |2
+      <? version="1.0" standalone="yes" encoding="utf-8" ?>
+      <Ah:root xmlns:Ah="myNamespace">
+        <child1/>
+        <child2>MyValue</child2>
+      </Ah:root>
+  - Name: Prolog without openning tag
+    Document: |2
+      xml version="1.0" standalone="yes" encoding="utf-8" ?>
+      <Ah:root xmlns:Ah="myNamespace">
+        <child1/>
+        <child2>MyValue</child2>
+      </Ah:root>
+  - Name: Prolog openning tag without question mark
+    Document: |2
+      <xml version="1.0" standalone="yes" encoding="utf-8" ?>
+      <Ah:root xmlns:Ah="myNamespace">
+        <child1/>
+        <child2>MyValue</child2>
+      </Ah:root>
+  - Name: Prolog closing tag without question mark
+    Document: |2
+      <?xml version="1.0" standalone="yes" encoding="utf-8" >
+      <Ah:root xmlns:Ah="myNamespace">
+        <child1/>
+        <child2>MyValue</child2>
+      </Ah:root>
+  - Name: Prolog no space between xml and attribute
+    Document: |2
+      <?xmlversion="1.0" standalone="yes" encoding="utf-8" ?>
+      <Ah:root xmlns:Ah="myNamespace">
+        <child1/>
+        <child2>MyValue</child2>
+      </Ah:root>
+    ExpectToFail: true # this is set to true due to issues with lexer
+  - Name: Prolog attributes without space
+    Document: |2
+      <?xml version="1.0"standalone="yes"encoding="utf-8" ?>
+      <Ah:root xmlns:Ah="myNamespace">
+        <child1/>
+        <child2>MyValue</child2>
+      </Ah:root>
+    ExpectToFail: true # this is set to true due to issues with lexer

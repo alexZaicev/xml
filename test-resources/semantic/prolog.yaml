@@ -1,0 +1,96 @@
+Suite: Covers document parsing with prolog variations
+Valid:
+  - Name: Prolog with version (1.0)
+    Document: |2
+      <?xml version="1.0" ?>
+      <root>
+      </root>
+    ExpectedDocument:
+      Prolog:
+        Version: "1.0"
+      Element:
+        Name: root
+        Line: 2
+        Column: 0
+  - Name: Prolog with version (1.1)
+    Document: |2
+      <?xml version="1.1" ?>
+      <root>
+      </root>
+    ExpectedDocument:
+      Prolog:
+        Version: "1.1"
+      Element:
+        Name: root
+        Line: 2
+        Column: 0
+  - Name: Prolog with version and encoding
+    Document: |2
+      <?xml version="1.0" encoding="UTF-8" ?>
+      <root>
+      </root>
+    ExpectedDocument:
+      Prolog:
+        Version: "1.0"
+        Encoding: "UTF-8"
+      Element:
+        Name: root
+        Line: 2
+        Column: 0
+  - Name: Prolog with version, encoding and standalone (yes)
+    Document: |2
+      <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+      <root>
+      </root>
+    ExpectedDocument:
+      Prolog:
+        Version: "1.0"
+        Encoding: "UTF-8"
+        Standalone: "yes"
+      Element:
+        Name: root
+        Line: 2
+        Column: 0
+  - Name: Prolog with version, encoding and standalone (no)
+    Document: |2
+      <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+      <root>
+      </root>
+    ExpectedDocument:
+      Prolog:
+        Version: "1.0"
+        Encoding: "UTF-8"
+        Standalone: "no"
+      Element:
+        Name: root
+        Line: 2
+        Column: 0
+Invalid:
+  - Name: Invalid prolog version (1)
+    Document: |2
+      <?xml version="1" ?>
+      <root>
+      </root>
+    ExpectedErrors:
+      - "listener error: line 1:6 invalid prolog version attribute specified"
+  - Name: Invalid prolog version (2.0)
+    Document: |2
+      <?xml version="2.0" ?>
+      <root>
+      </root>
+    ExpectedErrors:
+      - "listener error: line 1:6 invalid prolog version attribute specified"
+  - Name: Invalid prolog standlone value (first letter upper-case)
+    Document: |2
+      <?xml version="1.0" standalone="Yes" ?>
+      <root>
+      </root>
+    ExpectedErrors:
+      - "listener error: line 1:20 invalid prolog standalone attribute specified"
+  - Name: Invalid prolog standlone value (upper-case)
+    Document: |2
+      <?xml version="1.0" standalone="YES" ?>
+      <root>
+      </root>
+    ExpectedErrors:
+      - "listener error: line 1:20 invalid prolog standalone attribute specified"

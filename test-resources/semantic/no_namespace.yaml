@@ -1,0 +1,58 @@
+Suite: Covers document parsing without namespaces
+Valid:
+  - Name: Simple document
+    Document: |2
+      <?xml version="1.0" standalone="yes" encoding="utf-8" ?>
+      <root>
+        <child1 />
+        <child2>MyValue</child2>
+      </root>
+    ExpectedDocument: 
+      Prolog:
+        Version: "1.0"
+        Standalone: "yes"
+        Encoding: "utf-8"
+      Element:
+        Name: root
+        Line: 2
+        Column: 0
+        Children:
+          - Name: child1
+            Line: 3
+            Column: 2
+          - Name: child2
+            Content: MyValue
+            Line: 4
+            Column: 2
+  - Name: Simple document with attributes
+    Document: |2
+      <?xml version="1.0" standalone="yes" encoding="utf-8" ?>
+      <root id="root">
+        <child1 id="child #1" color="red" />
+        <child2 id="child #2">MyValue</child2>
+      </root>
+    ExpectedDocument: 
+      Prolog:
+        Version: "1.0"
+        Standalone: "yes"
+        Encoding: "utf-8"
+      Element:
+        Name: root
+        Attributes:
+          id: root
+        Line: 2
+        Column: 0
+        Children:
+          - Name: child1
+            Attributes:
+              id: 'child #1'
+              color: red
+            Line: 3
+            Column: 2
+          - Name: child2
+            Attributes:
+              id: 'child #2'
+            Content: MyValue
+            Line: 4
+            Column: 2
+
