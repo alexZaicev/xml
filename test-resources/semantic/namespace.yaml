@@ -1,0 +1,110 @@
+Suite: Coverse document parsing with namespaces
+Valid:
+  - Name: Simple document with single namespace (without prefix)
+    Document: |2
+      <?xml version="1.0" standalone="yes" encoding="utf-8" ?>
+      <root xmlns="urn:example-org:Transport">
+        <child1 />
+        <child2>MyValue</child2>
+      </root>
+    ExpectedDocument:
+      Prolog:
+        Version: "1.0"
+        Standalone: "yes"
+        Encoding: "utf-8"
+      Namespaces:
+        root: "urn:example-org:Transport"
+      Element:
+        Name: root
+        Line: 2
+        Column: 0
+        Attributes:
+          xmlns: urn:example-org:Transport
+        Children:
+          - Name: child1
+            Line: 3
+            Column: 2
+          - Name: child2
+            Content: MyValue
+            Line: 4
+            Column: 2
+  - Name: Simple document with single namespace (with prefix)
+    Document: |2
+      <?xml version="1.0" standalone="yes" encoding="utf-8" ?>
+      <Tr:root xmlns:Tr="urn:example-org:Transport">
+        <Tr:child1 />
+        <Tr:child2>MyValue</Tr:child2>
+      </Tr:root>
+    ExpectedDocument:
+      Prolog:
+        Version: "1.0"
+        Standalone: "yes"
+        Encoding: "utf-8"
+      Namespaces:
+        Tr: "urn:example-org:Transport"
+      Element:
+        Name: root
+        Namespace: Tr
+        Line: 2
+        Column: 0
+        Attributes:
+          xmlns:Tr: urn:example-org:Transport
+        Children:
+          - Name: child1
+            Namespace: Tr
+            Line: 3
+            Column: 2
+          - Name: child2
+            Namespace: Tr
+            Content: MyValue
+            Line: 4
+            Column: 2
+  - Name: Mixed namespaces
+    Document: |2
+      <?xml version="1.0" standalone="yes" encoding="utf-8" ?>
+      <root xmlns="urn:example-org:Transport" xmlns:Tr="urn:example-org:Transport">
+        <child1 />
+        <child2>MyValue</child2>
+      </root>
+    ExpectedDocument:
+      Prolog:
+        Version: "1.0"
+        Standalone: "yes"
+        Encoding: "utf-8"
+      Namespaces:
+        root: "urn:example-org:Transport"
+        Tr: "urn:example-org:Transport"
+      Element:
+        Name: root
+        Line: 2
+        Column: 0
+        Attributes:
+          xmlns: urn:example-org:Transport
+          xmlns:Tr: urn:example-org:Transport
+        Children:
+          - Name: child1
+            Line: 3
+            Column: 2
+          - Name: child2
+            Content: MyValue
+            Line: 4
+            Column: 2
+Invalid:
+  - Name: Dupplicate namespace without prefix
+    Document: |2
+      <?xml version="1.0" standalone="yes" encoding="utf-8" ?>
+      <root xmlns="urn:example-org:Transport" xmlns="urn:example-org:Transport">
+        <child1 />
+        <child2>MyValue</child2>
+      </root>
+    ExpectedErrors:
+      - "listener error: line 2:40 duplicate attribute"
+  - Name: Dupplicate namespace with prefix
+    Document: |2
+      <?xml version="1.0" standalone="yes" encoding="utf-8" ?>
+      <Tr:root xmlns:Tr="urn:example-org:Transport" xmlns:Tr="urn:example-org:Transport">
+        <child1 />
+        <child2>MyValue</child2>
+      </Tr:root>
+    ExpectedErrors:
+      - "listener error: line 2:46 duplicate attribute"
