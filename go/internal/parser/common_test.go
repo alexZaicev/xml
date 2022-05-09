@@ -8,7 +8,6 @@ import (
 	"testing"
 
 	"github.com/ghodss/yaml"
-
 	"github.com/stretchr/testify/require"
 )
 

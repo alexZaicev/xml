@@ -77,6 +77,13 @@ func (l *XMLListener) EnterProlog(ctx *genparser.PrologContext) {
 func (l *XMLListener) ExitProlog(ctx *genparser.PrologContext) {
 	// prolog flag set to false will indicate that next read attributes are related to document elements.
 	l.prologProcessed = true
+	// prolog suppose to have at least version attribute specified
+	if l.prolog.Version == "" {
+		l.recordError(xmlerrors.NewListenerErrorFromPosition(
+			"version attribute required in prolog",
+			ctx.GetStart(),
+		))
+	}
 }
 
 func (l *XMLListener) EnterElement(ctx *genparser.ElementContext) {
@@ -273,12 +280,22 @@ func (l *XMLListener) processElementAttr(ctx *genparser.AttributeContext) {
 			return
 		}
 		if len(attrNameTokens) == 1 {
-			l.currentNode = l.currentNode.WithAttribute(attrName, attrValue)
+			l.namespaces[l.currentNode.Name] = attrValue
+		} else {
+			l.namespaces[attrNameTokens[1]] = attrValue
 		}
-		l.namespaces[attrNameTokens[1]] = attrValue
-		return
 	}
 	// places attribute to node attribute map
+	if l.currentNode.Attributes != nil {
+		_, ok := l.currentNode.Attributes[attrName]
+		if ok {
+			l.recordError(xmlerrors.NewListenerErrorFromPosition(
+				"duplicate attribute",
+				ctx.GetStart(),
+			))
+			return
+		}
+	}
 	l.currentNode = l.currentNode.WithAttribute(attrName, attrValue)
 }
 

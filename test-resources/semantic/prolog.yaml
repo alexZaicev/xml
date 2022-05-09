@@ -66,6 +66,20 @@ Valid:
         Line: 2
         Column: 0
 Invalid:
+  - Name: Empty prolog
+    Document: |2
+      <?xml ?>
+      <root>
+      </root>
+    ExpectedErrors:
+      - "listener error: line 1:0 version attribute required in prolog"
+  - Name: Version attribute not specified in prolog
+    Document: |2
+      <?xml encoding="utf-8"?>
+      <root>
+      </root>
+    ExpectedErrors:
+      - "listener error: line 1:0 version attribute required in prolog"
   - Name: Invalid prolog version (1)
     Document: |2
       <?xml version="1" ?>
@@ -73,6 +87,7 @@ Invalid:
       </root>
     ExpectedErrors:
       - "listener error: line 1:6 invalid prolog version attribute specified"
+      - "listener error: line 1:0 version attribute required in prolog"
   - Name: Invalid prolog version (2.0)
     Document: |2
       <?xml version="2.0" ?>
@@ -80,6 +95,7 @@ Invalid:
       </root>
     ExpectedErrors:
       - "listener error: line 1:6 invalid prolog version attribute specified"
+      - "listener error: line 1:0 version attribute required in prolog"
   - Name: Invalid prolog standlone value (first letter upper-case)
     Document: |2
       <?xml version="1.0" standalone="Yes" ?>
